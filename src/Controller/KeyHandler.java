@@ -1,6 +1,5 @@
 package Controller;
 
-import Model.IShape;
 import Model.World;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -20,31 +19,26 @@ public class KeyHandler
         {
             inputKeys.add(code);
         }
-        System.out.println(inputKeys.size());
     }
 
     public static void handleKeyReleased(KeyEvent e)
     {
         KeyCode code = e.getCode();
         inputKeys.remove(code);
-        System.out.println(inputKeys.size());
     }
 
     public static void processKeys(World w)
     {
         if(inputKeys.contains(KeyCode.SPACE))
         {
-            for (IShape s : w.LoShapes)
-            {
-                s.setColor(Color.RED);
-            }
+            w.LoShapes.forEach(s -> s.setColor(Color.RED));
         }
         else
         {
-            for (IShape s : w.LoShapes)
-            {
-                s.setColor(Color.BLACK);
-            }
+            w.LoShapes.forEach(s -> s.setColor(Color.BLACK));
         }
+
+        // Alternatively,
+        //w.LoShapes.forEach(s -> s.setColor(inputKeys.contains(KeyCode.SPACE) ? Color.RED : Color.BLACK));
     }
 }
