@@ -8,13 +8,11 @@ import Model.World;
 import View.DrawWorld;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -26,47 +24,27 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        primaryStage.setTitle("Canvas!");
-
+        // Set up Javafx objects
         Group root = new Group();
         Scene theScene = new Scene(root);
-
         Canvas canvas = new Canvas(400, 200);
 
+        root.getChildren().add(canvas);
+        primaryStage.setScene(theScene);
+        primaryStage.show();
+
+        // the gc is what is drawn to
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        Rectangle r = new Rectangle(new Point2D(45, 30), 10, 40, Color.BLUE);
-        Circle c = new Circle(new Point2D(75, 50), 15, Color.BLACK);
+        // Make the world and populate it
+        World w = new World();
+        w.initWorld();
 
-        ArrayList<IShape> shapes = new ArrayList<>();
+        // Key handlers
+        theScene.setOnKeyPressed(KeyHandler::handleKeyPressed);
+        theScene.setOnKeyReleased(KeyHandler::handleKeyReleased);
 
-        shapes.add(r);
-        shapes.add(c);
-
-        World w = new World(shapes);
-
-        DrawWorld.draw(w, gc);
-
-        theScene.setOnKeyPressed(
-                new EventHandler<KeyEvent>()
-                {
-                    @Override
-                    public void handle(KeyEvent event)
-                    {
-                        KeyHandler.handleKeyPressed(event);
-                    }
-                });
-
-        theScene.setOnKeyReleased(
-                new EventHandler<KeyEvent>()
-                {
-                    @Override
-                    public void handle(KeyEvent event)
-                    {
-                        KeyHandler.handleKeyReleased(event);
-                    }
-                });
-
+        // Animation loop
         new AnimationTimer()
         {
             @Override
@@ -77,14 +55,7 @@ public class Main extends Application
                 DrawWorld.draw(w, gc);
             }
         }.start();
-
-
-        root.getChildren().add(canvas);
-        primaryStage.setScene(theScene);
-
-        primaryStage.show();
     }
-
 
     public static void main(String[] args) {
         launch(args);
